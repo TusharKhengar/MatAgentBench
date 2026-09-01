@@ -1,0 +1,6 @@
+{
+  "buildCommand": "mkdir -p site/results && cp -r results/* site/results/ 2>/dev/null || true",
+  "outputDirectory": "site",
+  "cleanUrls": true,
+  "trailingSlash": false
+}
