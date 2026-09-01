@@ -3,9 +3,12 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![Live Demo](https://img.shields.io/badge/demo-live-success.svg)](https://tusharkhengar.github.io/MatAgentBench/)
 
 **Where do LLM agents actually break when they run real atomistic materials workflows —
 and can we prove it?**
+
+🌐 **[Live Demo: Interactive Dashboard & Trajectory Viewer](https://tusharkhengar.github.io/MatAgentBench/)**
 
 MatAgentBench is a verifiable benchmark plus a *counterfactual failure-attribution
 harness* for agents doing computational materials science: fetch a crystal structure,
