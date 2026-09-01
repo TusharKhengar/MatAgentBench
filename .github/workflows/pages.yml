@@ -1,0 +1,52 @@
+# Publish the static site to GitHub Pages.
+#
+# The site is a pure renderer: `site/` holds three static files, `results/` holds the
+# JSON they read. Nothing is built and nothing is fetched at request time, so there is
+# no server to run and no secret that could leak into the page.
+#
+# One-time setup: repository Settings -> Pages -> Source: "GitHub Actions".
+
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "results/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble
+        run: |
+          mkdir -p _site
+          cp -r site/. _site/
+          mkdir -p _site/results
+          if [ -d results ]; then cp -r results/. _site/results/; fi
+          # Jekyll would otherwise strip paths beginning with an underscore.
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

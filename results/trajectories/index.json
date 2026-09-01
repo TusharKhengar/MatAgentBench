@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-08-25T14:30:05.366261Z",
+  "entries": [
+    {
+      "run_id": "demo0a",
+      "task_id": "formation_energy__mp-2657",
+      "family": "formation_energy",
+      "tier": 2,
+      "model": "cerebras/gpt-oss-120b",
+      "failure_class": "silent_basis",
+      "passed": false,
+      "n_steps": 4,
+      "has_counterfactual": true,
+      "path": "trajectories/cerebras-gpt-oss-120b/formation_energy__mp-2657__seed0.json"
+    },
+    {
+      "run_id": "demo1a",
+      "task_id": "formation_energy__mp-2657",
+      "family": "formation_energy",
+      "tier": 2,
+      "model": "groq/qwen/qwen3-32b",
+      "failure_class": "silent_basis",
+      "passed": false,
+      "n_steps": 4,
+      "has_counterfactual": false,
+      "path": "trajectories/groq-qwen-qwen3-32b/formation_energy__mp-2657__seed0.json"
+    },
+    {
+      "run_id": "demo0c",
+      "task_id": "vacancy_formation__mp-2657",
+      "family": "vacancy_formation",
+      "tier": 3,
+      "model": "cerebras/gpt-oss-120b",
+      "failure_class": "loop",
+      "passed": false,
+      "n_steps": 6,
+      "has_counterfactual": false,
+      "path": "trajectories/cerebras-gpt-oss-120b/vacancy_formation__mp-2657__seed0.json"
+    },
+    {
+      "run_id": "demo1c",
+      "task_id": "vacancy_formation__mp-2657",
+      "family": "vacancy_formation",
+      "tier": 3,
+      "model": "groq/qwen/qwen3-32b",
+      "failure_class": "loop",
+      "passed": false,
+      "n_steps": 6,
+      "has_counterfactual": false,
+      "path": "trajectories/groq-qwen-qwen3-32b/vacancy_formation__mp-2657__seed0.json"
+    },
+    {
+      "run_id": "demo1d",
+      "task_id": "bulk_modulus__mp-2657",
+      "family": "bulk_modulus",
+      "tier": 2,
+      "model": "groq/qwen/qwen3-32b",
+      "failure_class": "unearned_pass",
+      "passed": true,
+      "n_steps": 0,
+      "has_counterfactual": false,
+      "path": "trajectories/groq-qwen-qwen3-32b/bulk_modulus__mp-2657__seed0.json"
+    },
+    {
+      "run_id": "demo0b",
+      "task_id": "density__mp-2657",
+      "family": "density",
+      "tier": 1,
+      "model": "cerebras/gpt-oss-120b",
+      "failure_class": "success",
+      "passed": true,
+      "n_steps": 1,
+      "has_counterfactual": false,
+      "path": "trajectories/cerebras-gpt-oss-120b/density__mp-2657__seed0.json"
+    },
+    {
+      "run_id": "demo1b",
+      "task_id": "density__mp-2657",
+      "family": "density",
+      "tier": 1,
+      "model": "groq/qwen/qwen3-32b",
+      "failure_class": "success",
+      "passed": true,
+      "n_steps": 1,
+      "has_counterfactual": false,
+      "path": "trajectories/groq-qwen-qwen3-32b/density__mp-2657__seed0.json"
+    }
+  ]
+}

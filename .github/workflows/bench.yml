@@ -1,0 +1,139 @@
+# Scheduled benchmark sweep.
+#
+# This is what makes the published site *live* rather than a static dump: the sweep
+# re-runs on a schedule, commits refreshed results, and Pages redeploys itself.
+#
+# Two things worth knowing before relying on it:
+#   * GitHub disables scheduled workflows in a repository with no activity for 60 days.
+#     Any commit resets that clock.
+#   * Runners are 2-core with a 6h job limit, so the sweep is sharded across a matrix
+#     by model and the results are merged in a final job. One monolithic run would be
+#     both slower and more fragile against free-tier rate limits.
+#
+# API keys live in repository secrets and are only ever read here. Nothing in the
+# published site ever sees them.
+
+name: bench
+
+on:
+  schedule:
+    - cron: "17 3 * * 1" # 03:17 UTC every Monday
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Max tasks per model (0 = all)"
+        required: false
+        default: "0"
+      attribute:
+        description: "Run counterfactual attribution"
+        type: boolean
+        default: true
+
+concurrency:
+  group: bench
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 1 # free tiers throttle; parallel shards just trip rate limits
+      matrix:
+        preset: [large-open, mid-open, small-open]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -e ".[data,sim]"
+
+      # CHGNet weights and MP responses are both expensive to refetch and perfectly
+      # cacheable. LLM responses are cached by request hash, so a re-run after a
+      # partial failure costs almost nothing.
+      - name: Restore caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/torch
+            ~/.cache/chgnet
+            .mab_cache
+          key: mab-${{ matrix.preset }}-${{ hashFiles('tasks/*.json') }}
+          restore-keys: |
+            mab-${{ matrix.preset }}-
+            mab-
+
+      - name: Sweep
+        env:
+          MP_API_KEY: ${{ secrets.MP_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: mab run --preset "${{ matrix.preset }}" --limit "${{ inputs.limit || 0 }}"
+
+      - name: Attribute
+        if: ${{ inputs.attribute != false }}
+        env:
+          MP_API_KEY: ${{ secrets.MP_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: mab attribute --preset "${{ matrix.preset }}"
+
+      - name: Upload shard
+        uses: actions/upload-artifact@v4
+        with:
+          name: results-${{ matrix.preset }}
+          path: results/
+          retention-days: 7
+
+  publish:
+    needs: sweep
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -e "."
+
+      # Shards write disjoint per-model directories, so merging is a plain overlay.
+      - name: Collect shards
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/shards
+          pattern: results-*
+          merge-multiple: true
+
+      - name: Merge
+        run: |
+          mkdir -p results
+          cp -r /tmp/shards/. results/ 2>/dev/null || true
+
+      - name: Aggregate
+        run: mab report
+
+      - name: Commit refreshed results
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/
+          if git diff --staged --quiet; then
+            echo "No result changes to commit."
+          else
+            git commit -m "bench: refresh results ($(date -u +%Y-%m-%d))"
+            git push
+          fi

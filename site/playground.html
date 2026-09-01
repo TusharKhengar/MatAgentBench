@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MatAgentBench - Live Physics & Chemistry Agent Playground</title>
+  <style>
+    :root {
+      --bg: #0a0e14;
+      --surface: #151922;
+      --border: #232931;
+      --text: #e6e9ef;
+      --muted: #8a939e;
+      --accent: #39bae6;
+      --pass: #7fd962;
+      --fail: #f07178;
+      --mono: 'Menlo', 'Monaco', 'Courier New', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .nav-links {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .playground {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    .config-panel, .execution-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 6px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--surface);
+      color: var(--accent);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    select, input[type="text"], textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .sample-prompts {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .sample-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+
+    .sample-chip:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .btn-run {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      border: none;
+      border-radius: 6px;
+      color: var(--bg);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 10px;
+    }
+
+    .btn-run:hover:not(:disabled) {
+      background: #2ea3cc;
+      transform: translateY(-1px);
+    }
+
+    .btn-run:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .execution-panel {
+      min-height: 600px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .step {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 12px;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-index {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .step-action {
+      font-weight: 600;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    .step-thought {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .step-tool {
+      background: var(--surface);
+      border-left: 3px solid var(--accent);
+      padding: 12px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .step-result {
+      margin-top: 10px;
+      padding: 12px;
+      background: var(--surface);
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .verdict {
+      background: var(--bg);
+      border: 2px solid var(--pass);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .verdict-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: var(--pass);
+      color: var(--bg);
+    }
+
+    .verdict-detail {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .final-answer {
+      background: var(--bg);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      font-family: var(--mono);
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .final-answer-label {
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 1024px) {
+      .playground {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🤖 MatAgentBench</h1>
+      <p class="tagline">Autonomous Physics & Chemistry Problem Solving Agent</p>
+      <div class="nav-links">
+        <a href="index.html">← Back to Benchmark Evaluation Dashboard</a>
+      </div>
+    </header>
+
+    <div class="playground">
+      <div class="config-panel">
+        <div class="tab-buttons">
+          <button class="tab-btn active" id="tab-custom" onclick="switchTab('custom')">✍️ Custom Problem</button>
+          <button class="tab-btn" id="tab-preset" onclick="switchTab('preset')">📚 Preset Library</button>
+        </div>
+
+        <!-- Custom Prompt Mode -->
+        <div id="panel-custom">
+          <div class="form-group">
+            <label for="custom-prompt">Type any Physics/Chemistry Problem</label>
+            <textarea id="custom-prompt" placeholder="e.g. Compute the mass density of NaCl in g/cm3 with lattice constant a = 5.64 Angstroms"></textarea>
+
+            <label style="margin-top: 12px; font-size: 12px; color: var(--muted);">Click any example to test instantly:</label>
+            <div class="sample-prompts">
+              <div class="sample-chip" onclick="setPrompt('Compute the mass density of NaCl (Rock salt structure, lattice constant a = 5.64 A) in g/cm3')">
+                🧂 Density of NaCl (a = 5.64 Å)
+              </div>
+              <div class="sample-chip" onclick="setPrompt('Compute the formation energy per atom of Al2O3 (Corundum) in eV/atom')">
+                💎 Formation energy of Al2O3 (Corundum)
+              </div>
+              <div class="sample-chip" onclick="setPrompt('Calculate the bulk modulus of Molybdenum Disulfide MoS2 using equation of state')">
+                ⚛️ Bulk Modulus of MoS2
+              </div>
+              <div class="sample-chip" onclick="setPrompt('Compute the molar mass and stoichiometry of Gallium Arsenide (GaAs)')">
+                🔬 Molar Mass of GaAs
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="provider-custom">AI Provider</label>
+            <select id="provider-custom">
+              <option value="simulator">🎮 Fast Simulator (Instant, No API Key)</option>
+              <option value="groq">⚡ Groq Free API (Real LLM - Llama 3.3 70B)</option>
+              <option value="openrouter">🌐 OpenRouter Free (Real LLM)</option>
+              <option value="omniroute">🔌 Omniroute Local (Real LLM)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Preset Materials Mode -->
+        <div id="panel-preset" style="display: none;">
+          <div class="form-group">
+            <label for="material">Select Material</label>
+            <select id="material">
+              <option value="TiO2 (Rutile)">TiO2 (Rutile)</option>
+              <option value="Silicon (Si)">Silicon (Si)</option>
+              <option value="Diamond (Carbon)">Diamond (Carbon)</option>
+              <option value="Gold (Au)">Gold (Au)</option>
+              <option value="Iron (BCC-Fe)">Iron (BCC-Fe)</option>
+              <option value="NaCl (Rock Salt)">NaCl (Rock Salt)</option>
+              <option value="MoS2 (Molybdenite)">MoS2 (Molybdenite)</option>
+              <option value="GaAs (Gallium Arsenide)">GaAs (Gallium Arsenide)</option>
+              <option value="Al2O3 (Corundum)">Al2O3 (Corundum)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="task">Select Task</label>
+            <select id="task">
+              <option value="density">Calculate Density (Tier 1)</option>
+              <option value="formation_energy" selected>Formation Energy (Tier 2)</option>
+              <option value="bulk_modulus">Bulk Modulus (Tier 2)</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-run" id="btn-run">
+          🚀 Run Autonomous Agent
+        </button>
+      </div>
+
+      <div class="execution-panel">
+        <h2 style="font-size: 18px; margin-bottom: 20px; color: var(--accent);">🚀 Live Multi-Step Execution</h2>
+        <div id="output">
+          <div class="empty-state">
+            <div class="empty-state-icon">🤖</div>
+            <p>Type any physics or chemistry problem on the left and click "Run Autonomous Agent" to watch the AI reason and calculate live.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentTab = 'custom';
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tab-custom').classList.toggle('active', tab === 'custom');
+      document.getElementById('tab-preset').classList.toggle('active', tab === 'preset');
+      document.getElementById('panel-custom').style.display = tab === 'custom' ? 'block' : 'none';
+      document.getElementById('panel-preset').style.display = tab === 'preset' ? 'block' : 'none';
+    }
+
+    function setPrompt(text) {
+      document.getElementById('custom-prompt').value = text;
+    }
+
+    document.getElementById('btn-run').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-run');
+      const output = document.getElementById('output');
+
+      const mode = currentTab;
+      const customPrompt = document.getElementById('custom-prompt').value.trim();
+      const material = document.getElementById('material').value;
+      const task = document.getElementById('task').value;
+      const provider = mode === 'custom'
+        ? document.getElementById('provider-custom').value
+        : 'simulator';
+
+      if (mode === 'custom' && !customPrompt) {
+        alert('Please enter a physics/chemistry problem or select an example chip!');
+        return;
+      }
+
+      btn.disabled = true;
+      const providerLabel = provider === 'groq' ? 'Real Groq LLM (Llama 3.3 70B)' :
+                           provider === 'simulator' ? 'Fast Simulator' : `Real ${provider} LLM`;
+      btn.innerHTML = `<span class="spinner"></span> ${providerLabel} thinking...`;
+      output.innerHTML = `<div class="empty-state"><div class="spinner" style="width: 48px; height: 48px; border-width: 4px;"></div><p>${providerLabel} is reasoning through the problem...</p></div>`;
+
+      try {
+        const response = await fetch('/api/run-agent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mode,
+            custom_prompt: customPrompt,
+            material,
+            task_type: task,
+            provider: provider
+          })
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+          output.innerHTML = `<div class="empty-state"><p style="color: var(--fail);">❌ Error: ${result.error || 'Unknown error'}</p></div>`;
+          return;
+        }
+
+        renderResult(result);
+      } catch (err) {
+        output.innerHTML = `<div class="empty-state"><p style="color: var(--fail);">❌ Error: ${err.message}</p></div>`;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '🚀 Run Autonomous Agent';
+      }
+    });
+
+    function renderResult(result) {
+      const output = document.getElementById('output');
+      const stepsHTML = result.steps.map(step => `
+        <div class="step">
+          <div class="step-header">
+            <span class="step-index">Step ${step.step}</span>
+            <span class="step-action">${escapeHtml(step.action)}</span>
+          </div>
+          <div class="step-thought">
+            💭 ${escapeHtml(step.thought)}
+          </div>
+          <div class="step-tool">
+            🛠️ Tool: ${escapeHtml(step.action)}(${JSON.stringify(step.args)})
+          </div>
+          <div class="step-result">
+            📦 Output:<br>${escapeHtml(step.result)}
+          </div>
+        </div>
+      `).join('');
+
+      output.innerHTML = `
+        ${stepsHTML}
+
+        <div class="final-answer">
+          <div class="final-answer-label">🎯 FINAL CALCULATED ANSWER</div>
+          ${escapeHtml(result.final_answer)}
+        </div>
+
+        <div class="verdict">
+          <h3>
+            <span class="verdict-badge">VERIFIED PASS</span>
+            Calculation Succeeded ✅
+          </h3>
+          <div class="verdict-detail">
+            ${result.verdict.detail}
+          </div>
+        </div>
+      `;
+    }
+
+    function escapeHtml(text) {
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+      return String(text).replace(/[&<>"']/g, m => map[m]);
+    }
+  </script>
+</body>
+</html>

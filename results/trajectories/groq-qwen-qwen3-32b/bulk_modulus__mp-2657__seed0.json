@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "demo1d",
+  "task_id": "bulk_modulus__mp-2657",
+  "model": {
+    "backend": "groq",
+    "model": "qwen/qwen3-32b",
+    "open_weights": true,
+    "temperature": 0.0,
+    "max_context": null
+  },
+  "seed": 0,
+  "steps": [],
+  "final_answer": null,
+  "final_answer_raw": "FINAL_ANSWER: {\"value\": 210.0, \"unit\": \"GPa\", \"basis\": \"per_cell\"}",
+  "verdict": {
+    "passed": true,
+    "failure_class": "unearned_pass",
+    "reported": {
+      "value": 210.0,
+      "unit": "GPa",
+      "basis": "per_cell",
+      "cell": "unspecified",
+      "state": "unrelaxed"
+    },
+    "truth": {
+      "value": 210.0,
+      "unit": "GPa",
+      "basis": "per_cell",
+      "cell": "primitive",
+      "state": "relaxed"
+    },
+    "relative_error": 0.0,
+    "reconciliation": null,
+    "stage_checks": {
+      "eos": false,
+      "fetch_structure": false,
+      "relax": false,
+      "answer_parse_strict": true
+    },
+    "detail": "Correct value without executing required stage(s): eos, fetch_structure, relax. Likely recalled, not computed."
+  },
+  "started_at": "2026-08-25T14:30:05.360152Z",
+  "finished_at": null,
+  "total_tokens": 300,
+  "wall_ms": null,
+  "error": null,
+  "derived_from": null,
+  "intervention": null
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "demo0b",
+  "task_id": "density__mp-2657",
+  "model": {
+    "backend": "cerebras",
+    "model": "gpt-oss-120b",
+    "open_weights": true,
+    "temperature": 0.0,
+    "max_context": null
+  },
+  "seed": 0,
+  "steps": [
+    {
+      "index": 0,
+      "thought": "Calling mp_get_structure.",
+      "tool_call": {
+        "name": "mp_get_structure",
+        "args": {
+          "material_id": "mp-2657"
+        }
+      },
+      "tool_result": {
+        "ok": true,
+        "content": "{\"handle\":\"s0\",\"volume_angstrom3\":62.4}",
+        "error": null,
+        "duration_ms": null
+      },
+      "context_tokens": 800,
+      "prompt_tokens": 700,
+      "completion_tokens": 90,
+      "latency_ms": 640.0,
+      "raw_response": null
+    }
+  ],
+  "final_answer": null,
+  "final_answer_raw": "FINAL_ANSWER: {\"value\": 4.23, \"unit\": \"g/cm^3\", \"basis\": \"per_cell\"}",
+  "verdict": {
+    "passed": true,
+    "failure_class": "success",
+    "reported": {
+      "value": 4.23,
+      "unit": "g/cm^3",
+      "basis": "per_cell",
+      "cell": "unspecified",
+      "state": "unrelaxed"
+    },
+    "truth": {
+      "value": 4.23,
+      "unit": "g/cm^3",
+      "basis": "per_cell",
+      "cell": "primitive",
+      "state": "relaxed"
+    },
+    "relative_error": 0.0,
+    "reconciliation": null,
+    "stage_checks": {
+      "fetch_structure": true,
+      "answer_parse_strict": true,
+      "declared_convention_matches": false
+    },
+    "detail": "Value correct but the reported convention label disagrees with ground truth (4.23 g/cm^3 [per_cell, unspecified, unrelaxed] vs 4.23 g/cm^3 [per_cell, primitive, relaxed])."
+  },
+  "started_at": "2026-08-25T14:30:05.359141Z",
+  "finished_at": null,
+  "total_tokens": 900,
+  "wall_ms": null,
+  "error": null,
+  "derived_from": null,
+  "intervention": null
+}

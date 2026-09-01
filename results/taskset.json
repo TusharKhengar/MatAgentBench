@@ -1,0 +1,184 @@
+{
+  "schema_version": "1.0.0",
+  "name": "demo-v0",
+  "generated_at": "2026-08-25T14:30:05.359141Z",
+  "tasks": [
+    {
+      "task_id": "formation_energy__mp-2657",
+      "tier": 2,
+      "family": "formation_energy",
+      "prompt": "[demo] Compute the formation energy of TiO2 (mp-2657).",
+      "material_ids": [
+        "mp-2657"
+      ],
+      "answer": {
+        "value": -3.5,
+        "unit": "eV/atom",
+        "basis": "per_atom",
+        "cell": "primitive",
+        "state": "relaxed"
+      },
+      "tolerance": {
+        "rel": 0.05,
+        "abs": 0.0
+      },
+      "cell_context": {
+        "n_atoms_primitive": 6,
+        "n_atoms_conventional": 12,
+        "n_formula_units_primitive": 2,
+        "n_formula_units_conventional": 4,
+        "volume_primitive": 62.4,
+        "volume_conventional": 124.8,
+        "reduced_formula": "TiO2"
+      },
+      "provenance": {
+        "source": "materials_project",
+        "source_id": "mp-2657",
+        "retrieved_at": "2026-08-25T14:30:05.359141Z",
+        "url": null,
+        "license": null,
+        "cross_checked_against": null
+      },
+      "required_stages": [
+        "fetch_structure",
+        "relax",
+        "reference_energies",
+        "analysis"
+      ],
+      "max_steps": 20,
+      "notes": null
+    },
+    {
+      "task_id": "bulk_modulus__mp-2657",
+      "tier": 2,
+      "family": "bulk_modulus",
+      "prompt": "[demo] Compute the bulk modulus of TiO2 (mp-2657).",
+      "material_ids": [
+        "mp-2657"
+      ],
+      "answer": {
+        "value": 210.0,
+        "unit": "GPa",
+        "basis": "per_cell",
+        "cell": "primitive",
+        "state": "relaxed"
+      },
+      "tolerance": {
+        "rel": 0.05,
+        "abs": 0.0
+      },
+      "cell_context": {
+        "n_atoms_primitive": 6,
+        "n_atoms_conventional": 12,
+        "n_formula_units_primitive": 2,
+        "n_formula_units_conventional": 4,
+        "volume_primitive": 62.4,
+        "volume_conventional": 124.8,
+        "reduced_formula": "TiO2"
+      },
+      "provenance": {
+        "source": "materials_project",
+        "source_id": "mp-2657",
+        "retrieved_at": "2026-08-25T14:30:05.359141Z",
+        "url": null,
+        "license": null,
+        "cross_checked_against": null
+      },
+      "required_stages": [
+        "fetch_structure",
+        "relax",
+        "eos"
+      ],
+      "max_steps": 20,
+      "notes": null
+    },
+    {
+      "task_id": "density__mp-2657",
+      "tier": 1,
+      "family": "density",
+      "prompt": "[demo] Compute the density of TiO2 (mp-2657).",
+      "material_ids": [
+        "mp-2657"
+      ],
+      "answer": {
+        "value": 4.23,
+        "unit": "g/cm^3",
+        "basis": "per_cell",
+        "cell": "primitive",
+        "state": "relaxed"
+      },
+      "tolerance": {
+        "rel": 0.05,
+        "abs": 0.0
+      },
+      "cell_context": {
+        "n_atoms_primitive": 6,
+        "n_atoms_conventional": 12,
+        "n_formula_units_primitive": 2,
+        "n_formula_units_conventional": 4,
+        "volume_primitive": 62.4,
+        "volume_conventional": 124.8,
+        "reduced_formula": "TiO2"
+      },
+      "provenance": {
+        "source": "materials_project",
+        "source_id": "mp-2657",
+        "retrieved_at": "2026-08-25T14:30:05.359141Z",
+        "url": null,
+        "license": null,
+        "cross_checked_against": null
+      },
+      "required_stages": [
+        "fetch_structure"
+      ],
+      "max_steps": 20,
+      "notes": null
+    },
+    {
+      "task_id": "vacancy_formation__mp-2657",
+      "tier": 3,
+      "family": "vacancy_formation",
+      "prompt": "[demo] Compute the vacancy formation of TiO2 (mp-2657).",
+      "material_ids": [
+        "mp-2657"
+      ],
+      "answer": {
+        "value": 5.1,
+        "unit": "eV",
+        "basis": "per_cell",
+        "cell": "primitive",
+        "state": "relaxed"
+      },
+      "tolerance": {
+        "rel": 0.05,
+        "abs": 0.0
+      },
+      "cell_context": {
+        "n_atoms_primitive": 6,
+        "n_atoms_conventional": 12,
+        "n_formula_units_primitive": 2,
+        "n_formula_units_conventional": 4,
+        "volume_primitive": 62.4,
+        "volume_conventional": 124.8,
+        "reduced_formula": "TiO2"
+      },
+      "provenance": {
+        "source": "materials_project",
+        "source_id": "mp-2657",
+        "retrieved_at": "2026-08-25T14:30:05.359141Z",
+        "url": null,
+        "license": null,
+        "cross_checked_against": null
+      },
+      "required_stages": [
+        "fetch_structure",
+        "cell_setup",
+        "defect",
+        "relax",
+        "analysis"
+      ],
+      "max_steps": 20,
+      "notes": null
+    }
+  ]
+}

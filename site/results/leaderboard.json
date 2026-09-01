@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0.0",
+  "benchmark": "MatAgentBench",
+  "generated_at": "2026-08-25T14:30:05.365245Z",
+  "taskset": "demo-v0",
+  "n_tasks": 4,
+  "results": [
+    {
+      "model": {
+        "backend": "groq",
+        "model": "qwen/qwen3-32b",
+        "open_weights": true,
+        "temperature": 0.0,
+        "max_context": null
+      },
+      "n_tasks": 4,
+      "n_passed": 2,
+      "pass_rate": 0.5,
+      "earned_pass_rate": 0.25,
+      "silent_failure_rate": 0.5,
+      "failure_counts": {
+        "silent_basis": 1,
+        "success": 1,
+        "loop": 1,
+        "unearned_pass": 1
+      },
+      "pass_rate_by_tier": {
+        "1": 1.0,
+        "2": 0.5,
+        "3": 0.0
+      },
+      "mean_steps": 2.75,
+      "total_tokens": 13200,
+      "attribution": {
+        "schema_version": "1.0.0",
+        "model": {
+          "backend": "groq",
+          "model": "qwen/qwen3-32b",
+          "open_weights": true,
+          "temperature": 0.0,
+          "max_context": null
+        },
+        "n_failures": 2,
+        "recovered_by_kind": {
+          "convention_correct": 1,
+          "plan_repair": 1,
+          "context_restore": 0
+        },
+        "attempted_by_kind": {
+          "convention_correct": 1,
+          "plan_repair": 2,
+          "context_restore": 1
+        }
+      }
+    },
+    {
+      "model": {
+        "backend": "cerebras",
+        "model": "gpt-oss-120b",
+        "open_weights": true,
+        "temperature": 0.0,
+        "max_context": null
+      },
+      "n_tasks": 3,
+      "n_passed": 1,
+      "pass_rate": 0.3333333333333333,
+      "earned_pass_rate": 0.3333333333333333,
+      "silent_failure_rate": 0.5,
+      "failure_counts": {
+        "silent_basis": 1,
+        "success": 1,
+        "loop": 1
+      },
+      "pass_rate_by_tier": {
+        "1": 1.0,
+        "2": 0.0,
+        "3": 0.0
+      },
+      "mean_steps": 3.6666666666666665,
+      "total_tokens": 12900,
+      "attribution": {
+        "schema_version": "1.0.0",
+        "model": {
+          "backend": "cerebras",
+          "model": "gpt-oss-120b",
+          "open_weights": true,
+          "temperature": 0.0,
+          "max_context": null
+        },
+        "n_failures": 2,
+        "recovered_by_kind": {
+          "convention_correct": 1,
+          "plan_repair": 1,
+          "context_restore": 0
+        },
+        "attempted_by_kind": {
+          "convention_correct": 1,
+          "plan_repair": 2,
+          "context_restore": 1
+        }
+      }
+    }
+  ],
+  "headline": {
+    "silent_failure_share_of_failures": 0.5,
+    "mean_silent_share_across_models": 0.5,
+    "dominant_failure": {
+      "failure_class": "silent_basis",
+      "share": 0.5
+    },
+    "unearned_passes": 1,
+    "n_models": 2
+  }
+}

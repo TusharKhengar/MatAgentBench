@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MatAgentBench — where atomistic agents break</title>
+<meta name="description" content="A verifiable benchmark and counterfactual failure-attribution harness for LLM agents running atomistic materials workflows.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <h1>MatAgentBench</h1>
+    <p class="tagline">
+      Where do LLM agents actually break when they run real atomistic materials
+      workflows — and can we prove it?
+    </p>
+    <p class="sub" id="generated">Loading results…</p>
+    <nav class="links">
+      <a id="repo-link" href="#">Source</a>
+      <a href="playground.html" style="background: #39bae6; color: #0a0e14; font-weight: 600;">🚀 Live Agent Playground</a>
+      <a href="#viewer">Trajectory viewer</a>
+      <a href="#taxonomy">Failure taxonomy</a>
+      <a href="#leaderboard">Leaderboard</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ headline ============================ -->
+  <section class="headline" id="headline">
+    <div class="stat-row" id="stats"></div>
+    <p class="callout" id="callout"></p>
+  </section>
+
+  <!-- ======================== trajectory viewer ======================= -->
+  <section id="viewer">
+    <h2>Trajectory viewer</h2>
+    <p class="lede">
+      Every run is recorded step by step. Pick a failure and read what the agent
+      actually did — including the exact step where the physics was right and the
+      bookkeeping went wrong, and what happened when we repaired just that.
+    </p>
+
+    <div class="filters">
+      <label>Model
+        <select id="filter-model"><option value="">all</option></select>
+      </label>
+      <label>Outcome
+        <select id="filter-failure"><option value="">all</option></select>
+      </label>
+      <label>Tier
+        <select id="filter-tier">
+          <option value="">all</option><option value="1">1</option>
+          <option value="2">2</option><option value="3">3</option>
+        </select>
+      </label>
+      <span class="count" id="run-count"></span>
+    </div>
+
+    <div class="viewer-grid">
+      <ol class="run-list" id="run-list"></ol>
+      <div class="run-detail" id="run-detail">
+        <p class="empty">Select a run from the list.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================== taxonomy ============================== -->
+  <section id="taxonomy">
+    <h2>Failure taxonomy</h2>
+    <p class="lede">
+      Silent failures raise no exception and pass every syntactic check. They are
+      detected by searching a closed set of unit, basis, cell and sign transforms
+      for one that carries the agent's number onto ground truth — mechanically, with
+      no LLM judge involved.
+    </p>
+    <div id="taxonomy-chart"></div>
+  </section>
+
+  <!-- ========================= leaderboard ============================ -->
+  <section id="leaderboard">
+    <h2>Leaderboard</h2>
+    <p class="lede">
+      <strong>Earned</strong> excludes <em>unearned passes</em> — correct values produced
+      with none of the required tool calls, i.e. recalled from pretraining rather than
+      computed.
+    </p>
+    <div class="table-scroll">
+      <table id="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Model</th><th>Weights</th>
+            <th class="num">Pass</th><th class="num">Earned</th>
+            <th class="num">Silent share of failures</th>
+            <th class="num">Mean steps</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========================= attribution ============================ -->
+  <section id="attribution">
+    <h2>Counterfactual attribution</h2>
+    <p class="lede">
+      Each failed run is replayed verbatim up to step <em>k</em>, then exactly one thing
+      is changed and the agent continues live. Recovery rate is the share of failures
+      that turn into passes under that single repair.
+    </p>
+    <div id="attribution-chart"></div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    MIT licensed. Materials Project data CC-BY-4.0; JARVIS-DFT public domain.
+    Results regenerate on a schedule via GitHub Actions — this page is static and
+    reads committed JSON.
+  </p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
